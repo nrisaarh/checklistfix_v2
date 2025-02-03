@@ -30,6 +30,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // });
 
 
-Route::get('/checklists', [ChecklistController::class, 'index'])->name('checklists.index')->middleware('auth');
-Route::post('/checklists/store', [ChecklistController::class, 'store'])->name('checklists.store')->middleware('auth');
-Route::get('/checklists/export-pdf', [ChecklistController::class, 'exportPDF'])->name('checklists.export-pdf')->middleware('auth');
+Route::prefix('checklists')->middleware('auth')->group(function () {
+    Route::get('/', [ChecklistController::class, 'index'])->name('checklists.index');
+    Route::get('/create', [ChecklistController::class, 'create'])->name('checklists.create');
+    Route::post('/', [ChecklistController::class, 'store'])->name('checklists.store');
+    Route::get('{checklist}/edit', [ChecklistController::class, 'edit'])->name('checklists.edit');
+    Route::put('{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
+    Route::delete('{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');
+    Route::get('/export-pdf', [ChecklistController::class, 'exportPdf'])->name('checklists.export-pdf');
+});

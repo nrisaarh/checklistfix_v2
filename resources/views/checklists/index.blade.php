@@ -279,8 +279,8 @@
         {{-- <h3>Daftar Checklist</h3> --}}
         <div class="container mt-4 mb-4">
             <h3>Daftar Checklist</h3>
-
-            <!-- Form filter untuk export PDF berdasarkan bulan -->
+            
+            <!-- Jika ada form filter atau tombol export PDF, sertakan juga jika diperlukan -->
             <form action="{{ route('checklists.export-pdf') }}" method="GET" class="row g-2 mb-3">
                 <div class="col-md-3">
                     <label for="filter_month" class="form-label">Filter Bulan</label>
@@ -297,42 +297,47 @@
                     <button type="submit" class="btn btn-danger">Export PDF</button>
                 </div>
             </form>
-
+        
             <!-- Looping setiap data checklist -->
-            @foreach ($checklists as $checklist)
+            @foreach ($checklists as $item)
                 <div class="card mb-4">
                     <div class="card-body table-responsive">
-                        <div class="table-responsive">
-                            <!-- Tabel Header Checklist -->
-                            <table class="table table-bordered table-striped text-center">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="w-15">Tanggal</th>
-                                        <th class="w-15">Bulan</th>
-                                        <th class="w-15">Tahun</th>
-                                        <th class="w-10">Jam</th>
-                                        <th class="w-10">PIC</th>
-                                        <th class="w-15">Area</th>
-                                        <th class="w-20">Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ $checklist->tanggal }}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('m', str_pad($checklist->bulan, 2, '0', STR_PAD_LEFT))->format('F') }}
-                                        </td>
-                                        <td>{{ $checklist->tahun }}</td>
-                                        <td>{{ $checklist->jam_inspeksi }}</td>
-                                        <td>{{ $checklist->nama_pic }}</td>
-                                        <td>{{ $checklist->area }}</td>
-                                        <td>{{ $checklist->deskripsi_pekerjaan }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
+                        <table class="table table-bordered table-striped text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="w-15">Tanggal</th>
+                                    <th class="w-15">Bulan</th>
+                                    <th class="w-15">Tahun</th>
+                                    <th class="w-10">Jam</th>
+                                    <th class="w-10">PIC</th>
+                                    <th class="w-15">Area</th>
+                                    <th class="w-20">Notes</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ $item->tanggal }}</td>
+                                    <td>{{ \Carbon\Carbon::createFromFormat('m', str_pad($item->bulan, 2, '0', STR_PAD_LEFT))->format('F') }}</td>
+                                    <td>{{ $item->tahun }}</td>
+                                    <td>{{ $item->jam_inspeksi }}</td>
+                                    <td>{{ $item->nama_pic }}</td>
+                                    <td>{{ $item->area }}</td>
+                                    <td>{{ $item->deskripsi_pekerjaan }}</td>
+                                    <td>
+                                        <a href="{{ route('checklists.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="{{ route('checklists.destroy', $item->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus checklist ini?');">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+        
                         <!-- Tabel Daftar Pekerjaan -->
-                        <div class="table-responsive">
                         <table class="table table-bordered text-center">
                             <thead class="table-light">
                                 <tr>
@@ -360,20 +365,18 @@
                                         'Tissue',
                                         'Keset',
                                     ];
-                                    // Membagi daftar pekerjaan menjadi 2 kolom agar tampil lebih rapi
                                     $pekerjaan_chunked = array_chunk($pekerjaan, ceil(count($pekerjaan) / 2));
                                 @endphp
                                 @foreach ($pekerjaan_chunked as $chunk)
                                     <tr>
-                                        @foreach ($chunk as $item)
+                                        @foreach ($chunk as $pekerjaanItem)
                                             <td>
-                                                @if (in_array($item, $checklist->status_pekerjaan))
-                                                    <span
-                                                        style="font-size: 14px; font-weight: bold; color: black;">✔</span>
+                                                @if (in_array($pekerjaanItem, $item->status_pekerjaan))
+                                                    <span style="font-size: 14px; font-weight: bold; color: black;">✔</span>
                                                 @else
                                                     <span style="color: gray;">✘</span>
                                                 @endif
-                                                {{ $item }}
+                                                {{ $pekerjaanItem }}
                                             </td>
                                         @endforeach
                                     </tr>
@@ -382,9 +385,9 @@
                         </table>
                     </div>
                 </div>
-            </div>
             @endforeach
         </div>
+        
 
 
         {{-- <a href="{{ route('checklists.export-pdf') }}" class="btn btn-danger mb-3">Export PDF</a> --}}
