@@ -127,7 +127,7 @@
         }
 
         .navbar {
-            background-color: #3a3b3d;
+            background-color: #007bff;
         }
 
         .navbar .navbar-brand {
@@ -181,9 +181,11 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Logo</a>
+            <a class="navbar-brand" href="#">
+                <img src="{{ asset('logo checklist.png') }}" alt="Logo" height="50">
+            </a>
             <div class="d-flex">
-                <span class="navbar-text me-3">
+                <span class="navbar-text me-3 text-white">
                     Hi, {{ Auth::user()->name }}
                 </span>
                 <form action="{{ route('logout') }}" method="POST">
@@ -270,7 +272,7 @@
                     @endforeach
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" class="btn btn-primary w-100 d-block">Simpan</button>
         </form>
         <hr>
 
@@ -299,37 +301,40 @@
             <!-- Looping setiap data checklist -->
             @foreach ($checklists as $checklist)
                 <div class="card mb-4">
-                    <div class="card-body">
-                        <!-- Tabel Header Checklist -->
-                        <table class="table table-bordered table-blue">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Bulan</th>
-                                    <th>Tahun</th>
-                                    <th>Jam</th>
-                                    <th>PIC</th>
-                                    <th>Area</th>
-                                    <th>Notes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ $checklist->tanggal }}</td>
-                                    <td>{{ \Carbon\Carbon::createFromFormat('m', str_pad($checklist->bulan, 2, '0', STR_PAD_LEFT))->format('F') }}
-                                    </td>
-                                    <td>{{ $checklist->tahun }}</td>
-                                    <td>{{ $checklist->jam_inspeksi }}</td>
-                                    <td>{{ $checklist->nama_pic }}</td>
-                                    <td>{{ $checklist->area }}</td>
-                                    <td>{{ $checklist->deskripsi_pekerjaan }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="card-body table-responsive">
+                        <div class="table-responsive">
+                            <!-- Tabel Header Checklist -->
+                            <table class="table table-bordered table-striped text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="w-15">Tanggal</th>
+                                        <th class="w-15">Bulan</th>
+                                        <th class="w-15">Tahun</th>
+                                        <th class="w-10">Jam</th>
+                                        <th class="w-10">PIC</th>
+                                        <th class="w-15">Area</th>
+                                        <th class="w-20">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ $checklist->tanggal }}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('m', str_pad($checklist->bulan, 2, '0', STR_PAD_LEFT))->format('F') }}
+                                        </td>
+                                        <td>{{ $checklist->tahun }}</td>
+                                        <td>{{ $checklist->jam_inspeksi }}</td>
+                                        <td>{{ $checklist->nama_pic }}</td>
+                                        <td>{{ $checklist->area }}</td>
+                                        <td>{{ $checklist->deskripsi_pekerjaan }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <!-- Tabel Daftar Pekerjaan -->
-                        <table class="table table-bordered table-blue">
-                            <thead>
+                        <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
                                 <tr>
                                     <th colspan="9">Daftar Pekerjaan</th>
                                 </tr>
@@ -377,6 +382,7 @@
                         </table>
                     </div>
                 </div>
+            </div>
             @endforeach
         </div>
 
