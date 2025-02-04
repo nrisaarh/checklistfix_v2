@@ -111,5 +111,7 @@ class ChecklistController extends Controller
         return $pdf->download('checklists.pdf');
         // Jika ingin menampilkan PDF di browser, gunakan:
         return $pdf->stream('checklists.pdf');
+
+        // ikan tongkol ikan lele, selesei lee
     }
 }
