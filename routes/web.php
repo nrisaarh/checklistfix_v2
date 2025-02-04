@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChecklistController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -28,6 +29,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', UserController::class);
+});
 
 
 Route::prefix('checklists')->middleware('auth')->group(function () {

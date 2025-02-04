@@ -9,11 +9,30 @@ use App\Models\Checklist;
 
 class ChecklistController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $checklists = Checklist::all();
+        $query = Checklist::query();
+
+        // Filter berdasarkan Nama PIC jika diisi
+        if ($request->has('nama_pic') && $request->nama_pic != '') {
+            $query->where('nama_pic', 'like', "%{$request->nama_pic}%");
+        }
+
+        // Filter berdasarkan Bulan jika diisi
+        if ($request->has('bulan') && $request->bulan != '') {
+            $query->where('bulan', $request->bulan);
+        }
+
+        // Filter berdasarkan Tanggal jika diisi
+        if ($request->has('tanggal') && $request->tanggal != '') {
+            $query->where('tanggal', $request->tanggal);
+        }
+
+        $checklists = $query->get();
+
         return view('checklists.index', compact('checklists'));
     }
+
 
     public function store(Request $request)
     {
@@ -69,17 +88,28 @@ class ChecklistController extends Controller
         return redirect()->route('checklists.index')->with('success', 'Checklist deleted successfully');
     }
 
+    // Metode untuk export PDF
     public function exportPdf(Request $request)
     {
         $query = Checklist::query();
 
-        if ($request->has('filter_month') && $request->filter_month != '') {
-            $query->where('bulan', $request->filter_month);
+        // Terapkan filter jika ada (sesuai kebutuhan)
+        if ($request->has('nama_pic') && $request->nama_pic != '') {
+            $query->where('nama_pic', 'like', "%{$request->nama_pic}%");
+        }
+
+        if ($request->has('bulan') && $request->bulan != '') {
+            $query->where('bulan', $request->bulan);
         }
 
         $checklists = $query->get();
 
-        $pdf = PDF::loadView('checklists.export', compact('checklists'));
+        // Load view export PDF (pastikan file blade di folder resources/views/checklists/export.blade.php)
+        $pdf = Pdf::loadView('checklists.export', compact('checklists'));
+
+        // Anda dapat memilih untuk mendownload atau menampilkan PDF
         return $pdf->download('checklists.pdf');
+        // Jika ingin menampilkan PDF di browser, gunakan:
+        return $pdf->stream('checklists.pdf');
     }
 }
